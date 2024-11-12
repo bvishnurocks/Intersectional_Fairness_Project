@@ -1,0 +1,71 @@
+# One-Hot Encoding.py
+
+import pandas as pd
+
+# Define the input and output file paths
+input_path = 'datasets/german_processed.csv'
+output_path = 'datasets/german_processed_encoded.csv'
+
+# Load the dataset
+try:
+    df = pd.read_csv(input_path)
+    print(f"Loaded dataset with columns: {df.columns.tolist()}")
+except FileNotFoundError:
+    print(f"Error: The file {input_path} does not exist.")
+    exit(1)
+
+# List of categorical columns to encode
+categorical_columns = [
+    'Status_of_existing_checking_account',
+    'Credit_history',
+    'Purpose',
+    'Savings_account_bonds',
+    'Present_employment_since',
+    'Personal_status_and_sex',
+    'Other_debtors_guarantors',
+    'Other_installment_plans',
+    'Housing',
+    'Property',
+    'Job',
+    'Telephone',
+    'Foreign_worker'
+]
+
+# Verify that all specified categorical columns exist in the dataframe
+missing_cols = [col for col in categorical_columns if col not in df.columns]
+if missing_cols:
+    print(f"Error: The following categorical columns are missing in the dataset: {missing_cols}")
+    exit(1)
+
+# Check for unique values in each categorical column to identify any anomalies
+for col in categorical_columns:
+    unique_values = df[col].unique()
+    print(f"Unique values in '{col}': {unique_values}")
+
+# Perform One-Hot Encoding
+df_encoded = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
+print("One-Hot Encoding completed.")
+
+# Convert boolean columns (if any) to integers
+bool_columns = df_encoded.select_dtypes(include=['bool']).columns.tolist()
+if bool_columns:
+    df_encoded[bool_columns] = df_encoded[bool_columns].astype(int)
+    print(f"Converted boolean columns to integers: {bool_columns}")
+
+# Identify any remaining non-numeric columns
+non_numeric_cols = df_encoded.select_dtypes(exclude=['number']).columns.tolist()
+if non_numeric_cols:
+    print(f"Warning: The following columns are still non-numeric and will be converted to numeric if possible: {non_numeric_cols}")
+    for col in non_numeric_cols:
+        # Attempt to convert to numeric, coercing errors to NaN
+        df_encoded[col] = pd.to_numeric(df_encoded[col], errors='coerce')
+        if df_encoded[col].isnull().any():
+            print(f"Error: Column '{col}' contains non-numeric values that could not be converted.")
+            exit(1)
+        else:
+            print(f"Successfully converted column '{col}' to numeric.")
+
+# Save the encoded dataset
+df_encoded.to_csv(output_path, index=False)
+print(f"Encoded dataset saved to '{output_path}'.")
+
