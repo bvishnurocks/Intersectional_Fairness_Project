@@ -1,212 +1,195 @@
-# Intersectional Fairness Project
+# Fairness Analysis Framework
 
-A project aimed at mitigating biases in machine learning datasets and models using advanced fairness techniques from the AI Fairness 360 (AIF360) toolkit.
+A comprehensive framework for analyzing and mitigating algorithmic bias across multiple datasets using machine learning fairness metrics.
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Datasets](#datasets)
-- [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Environment Setup](#environment-setup)
-  - [Installing Dependencies](#installing-dependencies)
-- [Project Structure](#project-structure)
-- [Usage](#usage)
-  - [FairSMOTE on Adult Dataset](#fairsmote-on-adult-dataset)
-  - [FairMask on COMPAS Dataset](#fairmask-on-compas-dataset)
-  - [Reweighting (REW) on German Credit Dataset](#reweighting-rew-on-german-credit-dataset)
-  - [Automating Fairness Techniques](#automating-fairness-techniques)
-- [Verification](#verification)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+## 📊 Features
 
-## Project Overview
+- **Multi-Dataset Support**: Works with Adult, COMPAS, and German Credit datasets
+- **Multiple Classifiers**: Implements Random Forest, SVM, and Logistic Regression
+- **Fairness Metrics**: Calculates SPD, EOD, AOD, and worst-case metrics
+- **Interactive Visualizations**: Comprehensive plots and heatmaps
+- **Performance Analysis**: Complete performance metrics and comparisons
 
-The Intersectional Fairness Project implements three key fairness preprocessing methods using the AIF360 toolkit:
-
-- **FairSMOTE**: An extension of SMOTE that considers fairness constraints while generating synthetic samples
-- **FairMask**: A fairness-aware preprocessing technique that modifies datasets while preserving utility
-- **Reweighting (REW)**: Assigns weights to instances to balance the influence of different groups
-
-## Features
-
-- 🔧 **Preprocessing for Fairness**: Apply advanced fairness algorithms to balance datasets and reduce bias
-- 📊 **Support for Multiple Datasets**: Works with Adult, COMPAS, and German Credit datasets
-- 🔄 **Automated Workflow**: Streamlined scripts to apply multiple fairness techniques seamlessly
-- ✅ **Comprehensive Verification**: Tools to inspect and verify fairness transformations
-
-## Datasets
-
-The project works with the following datasets:
-
-- **Adult Dataset** (`adult_final.csv`)
-  - Purpose: Predict income exceeding $50K/year
-  - Protected Attributes: sex, race
-
-- **COMPAS Dataset** (`compas_processed.csv`)
-  - Purpose: Predict recidivism within two years
-  - Protected Attributes: race, gender
-
-- **German Credit Dataset** (`german_processed_mapped.csv`)
-  - Purpose: Assess credit risk
-  - Protected Attributes: sex, race
-
-Place these datasets in the `datasets/` directory.
-
-## Installation
+## 🛠 Installation
 
 ### Prerequisites
+- Python 3.9 or higher
+- pandas
+- scikit-learn
+- matplotlib
+- seaborn
+- numpy
 
-- Operating System: macOS, Linux, or Windows
-- Python: Version 3.9
-- Conda: Package and environment management system
+### Setup
 
-### Environment Setup
-
-1. Install [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-
-2. Create the Conda Environment:
+1. Clone the repository:
 ```bash
-conda create -n aif360_env python=3.9
+git clone https://github.com/yourusername/fairness-analysis.git
+cd fairness-analysis
 ```
 
-3. Activate the Environment:
+2. Install required packages:
 ```bash
-conda activate aif360_env
+pip install pandas numpy scikit-learn matplotlib seaborn
 ```
 
-4. (Optional) Prevent Auto-Activation of Base Environment:
-```bash
-conda config --set auto_activate_base false
-```
+3. Place your datasets in the `datasets/` directory:
+   - `adult_processed.csv`
+   - `compas_processed.csv`
+   - `german_processed_mapped.csv`
 
-### Installing Dependencies
-
-With the `aif360_env` activated:
-```bash
-pip install --upgrade pip
-pip install pandas scikit-learn aif360 imbalanced-learn joblib 'aif360[inFairness]'
-```
-
-## Project Structure
+## 📂 Project Structure
 
 ```
-Intersectional_Fairness_Project/
-├── apply_fairness_techniques.sh
+fairness-analysis/
 ├── datasets/
-│   ├── adult_final.csv
+│   ├── adult_processed.csv
 │   ├── compas_processed.csv
 │   └── german_processed_mapped.csv
-├── results/
-│   ├── fair_mask_compas.csv
-│   ├── fair_smote_adult.csv
-│   └── rew_german_credit.csv
-└── tools/
-    ├── FairMask/
-    │   └── fair_mask.py
-    ├── FairSMOTE/
-    │   └── fair_smote.py
-    └── REW/
-        └── reweighting.py
+├── src/
+│   ├── fairness_analysis.py
+│   └── visualization.py
+└── notebooks/
+    └── fairness_analysis.ipynb
 ```
 
-## Usage
+## 💻 Usage
 
-### FairSMOTE on Adult Dataset
-
-```bash
-cd tools/FairSMOTE/
-python fair_smote.py \
-    --dataset ../../datasets/adult_final.csv \
-    --output ../../results/fair_smote_adult.csv \
-    --label_column income \
-    --protected_attributes sex,race
-```
-
-### FairMask on COMPAS Dataset
-
-```bash
-cd ../FairMask/
-python fair_mask.py \
-    --dataset ../../datasets/compas_processed_clean.csv \
-    --output ../../results/fair_mask_compas.csv \
-    --label_column two_year_recid \
-    --protected_attributes race,gender
-```
-
-### Reweighting (REW) on German Credit Dataset
-
-```bash
-cd ../REW/
-python reweighting.py \
-    --dataset ../../datasets/german_processed_mapped.csv \
-    --output ../../results/rew_german_credit.csv \
-    --label_column Risk \
-    --protected_attributes sex,race
-```
-
-### Automating Fairness Techniques
-
-Run all techniques using the master script:
-```bash
-chmod +x apply_fairness_techniques.sh
-./apply_fairness_techniques.sh
-```
-
-## Verification
-
-Verify outputs using provided Python commands:
+### Basic Usage
 
 ```python
-# Example: Check Adult Dataset results
-import pandas as pd
-df = pd.read_csv('results/fair_smote_adult.csv')
-print('Income distribution:\n', df['income'].value_counts())
-print('Sample Weights Summary:\n', df['weight'].describe())
+from fairness_analysis import CompleteFairnessAnalysis
+
+# Initialize analyzer
+analyzer = CompleteFairnessAnalysis(datasets_dir='datasets')
+analyzer.load_datasets()
+
+# Run analysis
+results = analyzer.run_analysis()
+
+# Generate visualizations
+visualize_all_results(results)
 ```
 
-## Troubleshooting
+### Visualization Options
 
-Common issues and solutions:
-
-1. **Environment Activation Issues**
-```bash
-conda deactivate
-conda activate aif360_env
-```
-
-2. **Non-Numeric Columns**
+1. Performance Metrics:
 ```python
-import pandas as pd
-df = pd.read_csv('path/to/dataset.csv')
-print(df.dtypes)
+plot_performance_metrics(results)
 ```
 
-3. **Suppress Warnings**
+2. Fairness Metrics:
 ```python
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
+plot_fairness_metrics(results)
 ```
 
-For more help, visit the [AIF360 Documentation](https://aif360.readthedocs.io/) or open an issue.
+3. Protected Attributes Analysis:
+```python
+plot_protected_attributes(results)
+```
 
-## Contributing
+4. Worst-Case Metrics:
+```python
+plot_worst_case_metrics(results)
+```
 
-1. Fork the Repository
-2. Create a Feature Branch: `git checkout -b feature/YourFeature`
-3. Commit Changes: `git commit -m "Add Your Feature"`
-4. Push to Branch: `git push origin feature/YourFeature`
+## 📈 Metrics
+
+### Performance Metrics
+- Accuracy
+- Precision
+- Recall
+- F1 Score
+
+### Fairness Metrics
+- Statistical Parity Difference (SPD)
+- Equal Opportunity Difference (EOD)
+- Average Odds Difference (AOD)
+- Worst-case metrics for each
+
+## 📊 Sample Visualizations
+
+1. Performance Comparison
+   - Bar plots comparing classifier performance across datasets
+   - Metric-specific comparisons
+
+2. Fairness Heatmaps
+   - Dataset-specific fairness metric visualizations
+   - Protected attribute impact analysis
+
+3. Protected Attributes Analysis
+   - Comparative analysis of protected attributes
+   - Impact on different fairness metrics
+
+4. Worst-Case Analysis
+   - Comparison of worst-case scenarios
+   - Dataset and classifier-specific analysis
+
+## 🔍 Supported Datasets
+
+### Adult Dataset
+- **Target**: Income prediction
+- **Protected Attributes**: Sex, Race
+- **Format**: CSV with preprocessed features
+
+### COMPAS Dataset
+- **Target**: Recidivism prediction
+- **Protected Attributes**: Sex, Race
+- **Format**: CSV with preprocessed features
+
+### German Credit Dataset
+- **Target**: Credit risk assessment
+- **Protected Attributes**: Sex, Age
+- **Format**: CSV with preprocessed features
+
+## 📝 Example Output
+
+```python
+# Sample Results
+ADULT Dataset Summary:
+Performance Metrics:
+Classifier  Accuracy  Precision  Recall      F1
+RF          0.8597    0.8548    0.8597   0.8563
+SVM         0.8580    0.8516    0.8580   0.8523
+LR          0.8580    0.8517    0.8580   0.8526
+
+Fairness Metrics:
+Classifier  SPD      EOD      AOD
+RF         -0.2038  -0.6360  -0.3541
+SVM        -0.1873  -0.5971  -0.3298
+LR         -0.1897  -0.6020  -0.3331
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/YourFeature`
+3. Commit your changes: `git commit -m 'Add YourFeature'`
+4. Push to the branch: `git push origin feature/YourFeature`
 5. Open a Pull Request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgements
+## 👥 Authors
 
-- [AI Fairness 360 (AIF360)](https://github.com/Trusted-AI/AIF360)
-- [imbalanced-learn](https://imbalanced-learn.org/)
-- [PyTorch](https://pytorch.org/)
-- [pandas](https://pandas.pydata.org/)
+- Your Name - *Initial work* - [YourGitHub](https://github.com/yourusername)
+
+## 🙏 Acknowledgments
+
+- scikit-learn team for machine learning implementations
+- AIF360 toolkit for fairness metrics inspiration
+- Visualization libraries: matplotlib and seaborn
+
+## 📚 References
+
+- [Fairness Definitions Explained](https://fairware.cs.umass.edu/papers/Verma.pdf)
+- [Machine Learning Fairness](https://developers.google.com/machine-learning/fairness-overview/)
+- [AIF360 Documentation](https://aif360.readthedocs.io/)
+
+## 🔗 Additional Resources
+
+- [Project Wiki](https://github.com/yourusername/fairness-analysis/wiki)
+- [Issue Tracker](https://github.com/yourusername/fairness-analysis/issues)
+- [Documentation](https://yourusername.github.io/fairness-analysis)
