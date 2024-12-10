@@ -1,0 +1,21 @@
+// ML Pipeline with FairHOME
+digraph {
+	A [label="Data Collection
+(Raw Datasets with Protected Attributes)"]
+	B [label="FairHOME Preprocessing
+(Apply Fairness Constraints)"]
+	C [label="Feature Engineering
+(Feature Selection/Transformation)"]
+	D [label="Model Training
+(Logistic Regression, Random Forest, etc.)"]
+	E [label="Model Evaluation
+(Accuracy, ROC AUC, Fairness Metrics)"]
+	F [label="Post-Processing
+(Optional Fairness Adjustment)"]
+	A -> B [label="Raw Data"]
+	B -> C [label="Fairness Reweighted Data"]
+	C -> D [label="Processed Features"]
+	D -> E [label="Trained Model"]
+	E -> F [label="Model Metrics"]
+	F -> D [label="Optional Feedback"]
+}

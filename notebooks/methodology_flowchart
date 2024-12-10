@@ -1,0 +1,14 @@
+// Methodology
+digraph {
+	A [label="Data Preprocessing
+(Clean & encode)"]
+	B [label="FairHOME Transformation
+(Reweighting)"]
+	C [label="Model Training
+(Logistic, DT, RF)"]
+	D [label="Evaluation
+(Fairness metrics)"]
+	A -> B
+	B -> C
+	C -> D
+}

@@ -1,0 +1,34 @@
+// Experiment Design
+digraph {
+	A [label="UCI Adult Dataset" color=lightgrey shape=cylinder style=filled]
+	B [label="Data Preprocessing" shape=box]
+	C1 [label="Baseline
+(No Mitigation)" color=grey shape=parallelogram]
+	C2 [label="Apply
+Reweighing" color=blue shape=parallelogram]
+	C3 [label="Apply
+FairMask (LFR)" color=green shape=parallelogram]
+	C4 [label="Apply
+FairHOME
+(Proposed Method)" color=orange shape=parallelogram]
+	D [label="Model Training" shape=box]
+	D1 [label="Logistic Regression" color=lightblue shape=box style=filled]
+	D2 [label="Decision Tree" color=lightblue shape=box style=filled]
+	D3 [label="Random Forest" color=lightblue shape=box style=filled]
+	E [label=Evaluation shape=box]
+	A -> B
+	B -> C1
+	B -> C2
+	B -> C3
+	B -> C4
+	C1 -> D [label="Preprocessed Data"]
+	C2 -> D [label="Reweighed Data"]
+	C3 -> D [label="Transformed Data"]
+	C4 -> D [label="FairHOME Data"]
+	D -> D1
+	D -> D2
+	D -> D3
+	D1 -> E
+	D2 -> E
+	D3 -> E
+}
